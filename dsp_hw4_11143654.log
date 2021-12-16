@@ -1,0 +1,383 @@
+Generated notebook dsp_hw4_11143654.ipynb for matriculation number 11143654 on: 2021-01-22 15:39:20.126383
+# iPython magic command to load the matplotlib library and
+# select the notebook graphics frontend
+%matplotlib inline
+# import necessary functions from the thkdss library
+from thkdsp import *
+from dsplab import *
+# import audio related functions from the audio submodule
+from thkdsp.audio import play_signal, wav2dtsignal
+# import some definitions and functions from numpy, the python library for Matlab-like array processing
+from numpy import arange, shape, array, zeros, size, ones, isscalar
+# set font for Matplotlib to 'Times New Roman' if that is available
+set_mpl_font()
+# set default font size for Matplotlib, change to different value if labels are too large or too small
+set_mpl_fontsize(16)
+Info: 5400436791
+Homework 4 for matriculation number 11143654 started at: 2021-01-22 15:40:48.324437
+# Fri, 22 Jan 2021 15:41:40
+import numpy as np
+from thkdsp.ztransform import *
+from matplotlib import *
+from thkdsp import * 
+from thkdsp.ztransform import residue, residuez, zplane
+from numpy import poly, array
+from scipy.signal import lfilter# Fri, 22 Jan 2021 15:41:48
+set_mpl_font()
+set_mpl_fontsize(16)# Fri, 22 Jan 2021 15:43:03
+
+#The zeros of the system function from the question are given as:
+
+z_n1 = 1j
+
+z_n2 = -1j
+
+#While the poles are also given as: 
+
+z_p1 = -1/2 + 1/2j
+
+z_p2 = -1/2 - 1/2j# Fri, 22 Jan 2021 15:43:48
+#For the numerator polynomial where 5/4 is the constant as given in the solution
+
+b = 5/4 * np.poly([z_n1, z_n2]) 
+# Fri, 22 Jan 2021 15:44:03
+#for the denumerator ploynomial
+
+a = np.poly([z_p1, z_p2])
+
+print(b)
+print(a)# Fri, 22 Jan 2021 15:44:13
+#Entering the numerator coefficient directly and converting b_step into a numpy array internally
+b_step = array([1.25, 0])
+
+a_step = poly([z_p1, z_p2])
+
+print(b_step)
+
+#print(a_step)
+#No reason to print (a) because the result will be simliar to what we already have above since the denorminator does not differs# Fri, 22 Jan 2021 15:44:57
+r, p, c = residue(b_step, a_step)
+
+print(r) #residues
+
+print(p) #poles
+
+print(c) #constant # Fri, 22 Jan 2021 15:45:59
+#Given the range –5 <= n <= 20 from Ilias and the input signal s_n= np.sin((2*np.pi*n)/4)*step(n)
+
+nmin = -5
+
+nmax = 20
+
+n = lrange(nmin, nmax)
+
+s_n= np.sin((2*np.pi*n)/4)*step(n)
+
+h_n = c*delta(n)
+
+print (h_n)# Fri, 22 Jan 2021 15:46:33
+for k in range(0, len(p)):
+    h_n = h_n + step(n-1)*(r[k]*p[k]**(n-1))
+    
+h_n=np.real(h_n)
+
+fig, ax = plot_signal(n, h_n, xlabel="n", ylabel=r"h")
+
+fig.suptitle(r"Problem 5.8c : Output signal")
+#[Out]# Text(0.5, 0.98, 'Problem 5.8c : Output signal')
+# Fri, 22 Jan 2021 15:47:48
+#Computing the step response via lfilter funtion
+
+g_n = lfilter(b, a, s_n)
+
+fig, ax = plot_signal(n, g_n, xlabel="n", ylabel=r"g")
+
+fig.suptitle(r"Problem 5.8c filtered output")#[Out]# Text(0.5, 0.98, 'Problem 5.8c filtered output')
+# Fri, 22 Jan 2021 15:48:25
+print(h_n)# Fri, 22 Jan 2021 15:48:35
+print(g_n)# Fri, 22 Jan 2021 15:51:14
+#Coeficients gotten from the exercise
+
+b = array([0.25, -0.5, 0.25])
+a = array([1, 0, 0])
+
+b_step = array([0.5, 1, 0.5])
+a_step = array([1, -0.9, 0]) 
+
+
+#Doing the Pole-zero plot
+zplane(b, a)
+
+print(b)
+print(a)
+
+print(b_step)
+print(a_step)# Fri, 22 Jan 2021 15:52:00
+r, p, c = residue(b_step, a_step)
+
+print(r) #residues
+
+print(p) #poles
+
+print(c) #constant # Fri, 22 Jan 2021 15:52:12
+#Given the range –5 <= n <= 20 from Ilias
+
+nmin = -5
+
+nmax = 20
+
+n = lrange(nmin, nmax)
+
+h_n = c*delta(n)
+
+print (h_n)# Fri, 22 Jan 2021 15:53:26
+for k in range(0, len(p)):
+    h_n = h_n + step(n-1)*(r[k]*p[k]**(n-1))
+    
+h_n=np.real(h_n)
+print(h_n)
+
+fig, ax = plot_signal(n, h_n, xlabel="n", ylabel=r"h")
+
+fig.suptitle(r"Problem 5.9a : Output signal")
+#[Out]# Text(0.5, 0.98, 'Problem 5.9a : Output signal')
+# Fri, 22 Jan 2021 15:56:00
+#Computing the step response via lfilter funtion
+
+#input signal
+s_n = (2*(0.9)**n)*step(n)
+
+g_n = lfilter(b, a, s_n)
+print(g_n)
+
+fig, ax = plot_signal(n, g_n, xlabel="n", ylabel=r"g")
+fig.suptitle(r"Problem 5.8c filtered output")
+
+#[Out]# Text(0.5, 0.98, 'Problem 5.8c filtered output')
+# Fri, 22 Jan 2021 15:56:59
+#Computing the step response via lfilter funtion
+
+#input signal
+s_n = (2*(0.9)**n)*step(n)
+
+g_n = lfilter(b, a, s_n)
+print(g_n)
+
+fig, ax = plot_signal(n, g_n, xlabel="n", ylabel=r"g")
+fig.suptitle(r"Problem 5.9a filtered output signal")
+
+#[Out]# Text(0.5, 0.98, 'Problem 5.9a filtered output signal')
+# Fri, 22 Jan 2021 16:03:48
+#coefficient arrays from the exercise
+
+b = array([1, -0.5, 0])
+a = array([ 1, 0.5, -0.25])
+b_step = array([2, -1, 0, 0])
+a_step = array([1, -0.4, -0.7, 0.225]) 
+
+#Pole-zero plot
+zplane(b, a)
+
+print(b)
+print(a)
+
+print(b_step)
+print(a_step)
+# Fri, 22 Jan 2021 16:04:12
+r, p, c = residue(b_step, a_step)
+
+print(r)
+
+print(p)
+
+print(c)# Fri, 22 Jan 2021 16:04:26
+nmin = -5
+
+nmax = 20
+
+n = lrange(nmin, nmax)
+
+h_n=c*delta(n)
+
+print (h_n)# Fri, 22 Jan 2021 16:04:46
+for k in range(0, len(p)):
+    h_n = h_n + step(n-1)*(r[k]*p[k]**(n-1))
+
+h_n = np.real(h_n)
+print(h_n)
+    
+fig, ax = plot_signal(n, h_n, xlabel='n', ylabel=r'$h_n$')
+fig.suptitle(r'Problem 5.9b output signal')#[Out]# Text(0.5, 0.98, 'Problem 5.9b output signal')
+# Fri, 22 Jan 2021 16:05:13
+s_n = (2*(0.9)**n)*step(n) #input signal
+
+#Filtered output signal
+g_n = lfilter(b, a, s_n)
+
+print(g_n)
+
+#Ploting of the filtered output signal
+fig, ax = plot_signal(n, g_n, xlabel='n', ylabel=r'$f_n$')
+fig.suptitle(r'Problem 5.9b filtered output signal') #[Out]# Text(0.5, 0.98, 'Problem 5.9b filtered output signal')
+# Fri, 22 Jan 2021 16:07:05
+#coefficient arrays from the exercise
+
+b = array([2, 0])
+a = array([ 1, 0.5])
+
+b_step = array([4, 0, 0])
+a_step = array([1, 1.4, 0.45]) 
+
+
+#Pole-zero plot
+zplane(b, a)
+
+print(b)
+print(a)
+
+print(b_step)
+print(a_step)
+# Fri, 22 Jan 2021 16:12:46
+r, p, c = residue(b_step, a_step)
+
+print(r)
+
+print(p)
+
+print(c)# Fri, 22 Jan 2021 16:13:02
+nmin = -5
+nmax = 20
+n = lrange(nmin, nmax)
+h_n=c*delta(n)
+print (h_n)# Fri, 22 Jan 2021 16:13:11
+for k in range(0, len(p)):
+    h_n = h_n + step(n-1)*(r[k]*p[k]**(n-1))
+
+h_n = np.real(h_n)
+print(h_n)
+    
+fig, ax = plot_signal(n, h_n, xlabel='n', ylabel=r'$h_n$')
+fig.suptitle(r'Problem 5.9c output signal')#[Out]# Text(0.5, 0.98, 'Problem 5.9c output signal')
+# Fri, 22 Jan 2021 16:13:28
+#input signal
+s_n = (2*(0.9)**n)*step(n) 
+
+#Filter output signal
+g_n = lfilter(b, a, s_n)
+
+#Ploting filtered output signal
+fig, ax = plot_signal(n, g_n, xlabel='n', ylabel=r'$f_n$')
+fig.suptitle(r'Problem 5.9c filtered output signal') #[Out]# Text(0.5, 0.98, 'Problem 5.9c filtered output signal')
+# Fri, 22 Jan 2021 16:14:49
+ #coefficient arrays from the exercise
+    
+a = array([1, -0.4, -0.45])
+b = array([1.2, 0.6, -1])                  
+
+
+#Pole-zero plot
+zplane(b, a)
+print(a)
+print(b)# Fri, 22 Jan 2021 16:15:30
+ #coefficient arrays from the exercise
+    
+b = array([1.2, 0.6, -1])    
+a = array([1, -0.4, -0.45])
+                  
+
+
+#Pole-zero plot
+zplane(b, a)
+
+print(b)
+print(a)
+# Fri, 22 Jan 2021 16:15:57
+r, p, c = residue(b, a)
+print(r)
+print(p)
+print(c)# Fri, 22 Jan 2021 16:16:24
+nmin = -5
+
+nmax = 20
+
+n = lrange(nmin, nmax)
+
+h_n=c*delta(n)
+
+print (h_n)# Fri, 22 Jan 2021 16:17:57
+for k in range(0, len(p)):
+    h_n = h_n + step(n-1)*(r[k]*p[k]**(n-1))
+    
+h_n=np.real(h_n)
+print(h_n)
+
+fig, ax = plot_signal(n, h_n, xlabel="n", ylabel=r"h")
+
+fig.suptitle(r"Problem 5.9d : Output signal")
+#[Out]# Text(0.5, 0.98, 'Problem 5.9d : Output signal')
+# Fri, 22 Jan 2021 16:20:43
+#input signal
+s_n = (2*(0.9)**n)*step(n) 
+
+#Filter output signal
+g_n = lfilter(b, a, s_n)
+print(g_n)
+
+#Ploting filtered output signal
+fig, ax = plot_signal(n, g_n, xlabel='n', ylabel=r'$f_n$')
+fig.suptitle(r'Problem 5.9d filtered output signal')   #[Out]# Text(0.5, 0.98, 'Problem 5.9d filtered output signal')
+# Fri, 22 Jan 2021 16:21:46
+#coefficient arrays from the exercise
+
+b = array([1, 0.75, 0.5625, 0.421875, 0.31640625])
+
+a = array([1, 1.33333333, 1.77777778, 2.37037037, 3.16049383])
+
+#Pole-zero plot
+
+zplane(b, a)
+
+print(a)
+
+print(b)# Fri, 22 Jan 2021 16:22:26
+r, p, c = residue(b, a)
+
+print(r)
+
+print(p)
+
+print(c)# Fri, 22 Jan 2021 16:23:07
+nmin = -5
+
+nmax = 20
+
+n = lrange(nmin, nmax)
+
+h_n=c*delta(n)
+
+print (h_n)# Fri, 22 Jan 2021 16:24:17
+for k in range(0, len(p)):
+    h_n = h_n + step(n-1)*(r[k]*p[k]**(n-1))
+    
+h_n=np.real(h_n)
+print(h_n)
+fig, ax = plot_signal(n, h_n, xlabel="n", ylabel=r"h")
+
+fig.suptitle(r"Problem 5.9e : output signal")#[Out]# Text(0.5, 0.98, 'Problem 5.9e : output signal')
+# Fri, 22 Jan 2021 16:25:07
+s_n = (2*(0.9)**n)*step(n) #input signal
+
+#Filter output signal
+g_n = lfilter(b, a, s_n)
+
+print(g_n)
+
+#Ploting filtered output signal
+fig, ax = plot_signal(n, g_n, xlabel='n', ylabel=r'$f_n$')
+fig.suptitle(r'Problem 5.9e filtered output signal') #[Out]# Text(0.5, 0.98, 'Problem 5.9e filtered output signal')
+# Fri, 22 Jan 2021 16:29:31
+# finish homework
+dsp_hw4_finish()Finishing Homework 4 for matriculation number 11143654
+Homework 4  finished at: 2021-01-22 16:29:39.882985
+Finished after: 0:48:51.564927
+Info:  5400436791
